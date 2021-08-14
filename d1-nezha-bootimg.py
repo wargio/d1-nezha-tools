@@ -18,7 +18,7 @@ def align(value, size):
 	vsize  = len(value)
 	mask   = size - 1
 	module = vsize & mask
-	if module == 0:
+	if module == 0 and vsize > 0:
 		return value
 	padding = (b'\x00' * (size - module))
 	return value + padding
@@ -168,6 +168,8 @@ def main(args):
 		extract(args.input, args.output)
 		
 	else:
+		global cmdline
+		cmdline = args.cmdline.encode('ascii')
 		build(args.input, args.output, args.vmlinux)
 
 
@@ -191,5 +193,6 @@ example extracting zImage from a boot.img:
 	parser.add_argument('-x', '--extract', default=False, help='extracts the zImage from a boot.img', action='store_true')
 	parser.add_argument('-i', '--input', help='input filename')
 	parser.add_argument('-o', '--output', help='output filename')
+	parser.add_argument('-c', '--cmdline', default='', help='kernel command line')
 	args = parser.parse_args()
 	main(args)
